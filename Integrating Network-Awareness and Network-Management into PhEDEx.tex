@@ -1,0 +1,62 @@
+\documentclass[toc]{PoS}
+
+\title{Integrating Network-Awareness and Network-Management into PhEDEx}
+
+\ShortTitle{Network-Management in PhEDEx}
+
+\author{\speaker{Vlad Lapadatescu}\\
+Caltech / CERN, Switzerland\\
+E-mail: \email{vlad@cern.ch}}
+
+\author{Tony Wildish\\
+Princeton / USA\\
+E-mail: \email{awildish@princeton.edu}}
+
+\abstract{
+PhEDEx is the data placement and management tool in CMS, which controls bulk 
+data-flows. While robust, its architecture is now ten years old and has yet to fully 
+adapt to today's production environment, an environment in which the network is 
+the fastest and most reliable component.
+
+The ANSE (Advanced Network Services for Experiments) project, in the context of 
+CMS, aims to greatly improve PhEDEx' network awareness for smart source 
+selection, as well as to integrate bandwidth provisioning capabilities in the data 
+transfer management. Both parts require a good knowledge of the network status, 
+topology and of course, access to useful and up-to-date performance metrics.
+
+One of the first steps towards this goal involved the identification of a mechanism 
+for informing PhEDEx about independent network performance metrics. Methods 
+for providing these metrics have been prototyped and verified in a LAN testbed 
+using fake data transfer requests. This mechanism is already directly usable by CMS 
+in their production environment.
+
+Currently, the ANSE-PhEDEx testbed is spread over many servers at a number of 
+sites. It is composed of several machines dedicated to PhEDEx site agents, one 
+server holding the PhEDEx central agents, a central database and one server which 
+contains the PhEDEx website and data-service. Some of the site nodes have 
+additional attached storage nodes.
+
+In this paper, we present the results of PhEDEx data transfers using the Fast Data 
+Transfer (FDT) tool, on high-speed WAN circuits ranging from a few Gbps up to 40
+ Gbps. We continue by discussing their implications for intelligently controlling the 
+network from within PhEDEx. This involves development within PhEDEx itself, 
+integration between PhEDEx and various network fabric tools, and possibly 
+requirements for development of the fabric tools themselves, to support more
+ sophisticated PhEDEx use-cases.
+
+Finally, the paper will also describe the future plans for the project.}
+
+\FullConference{International Symposium for Grids and Computing 2014
+
+Taipei, Taiwan
+
+25-28 March 2014}
+
+\begin{document}
+
+\input{section-1-Introduction.tex}
+\input{section-2-Integration-at-the-FileDownload-Level.tex}
+\input{section-9-Summary.tex}
+\input{bibliography.tex}
+
+\end{document}
