@@ -13,7 +13,9 @@ ps2pdf -z -sPAPERSIZE=A4 'Integrating Network-Awareness and Network-Management i
 
 ...but I find that doesn't work well. It works with pdflatex, though that's not recommended:
 
-ps2pdf -z -sPAPERSIZE=A4 'Integrating Network-Awareness and Network-Management into PhEDEx.ps'
+pdflatex 'Integrating Network-Awareness and Network-Management into PhEDEx.tex'
+
+(if it complains about an error, just hit <RETURN>, it should continue)
 
 N.B. Starting from a clean directory, you will need to run pdflatex twice in order to get the figure numbers and references correct.
 
