@@ -34,7 +34,7 @@
 v1.2.1 LaTeX document class - P.D.]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\logo{\raisebox{-5mm}{\hbox{\noindent\includegraphics{PoSlogo}}}}
+\def\logo{\raisebox{-5mm}{\hbox{\noindent\includegraphics{Template/PoSlogo}}}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% NEW SWITCHES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newif\if@draft   \@draftfalse			% DEFAULT IS NOT DRAFT
 \newif\if@hyper   \@hypertrue			% DEFAULT IS HYPER
