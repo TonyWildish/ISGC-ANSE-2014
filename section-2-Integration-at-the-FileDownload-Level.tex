@@ -2,6 +2,171 @@
 
 \subsection{Changes to the FileDownload agent}
 
+For this prototype we decided to integrate all of the control and circuit awareness
+logic in the FileDownload agent, thus eliminating the need for an additional site 
+agent or any changes to the DB schema.
+
+
+
+\subsubsection{Making use of a circuit}
+
+When PhEDEx transfers files, it does so in bulk. This number varies from instance
+to instance, but this for PhEDEx constitutes a transfer job. Each file in a job
+represents a transfer task that needs to be fulfilled. Each transfer task contains
+(among others) information about the source and destination PFNs\footnote{Physical File Names}.
+
+A PFN contains the protocol that needs to be used, the hostname or IP of the file
+and the local path of that file. This means that if we want PhEDEx to use
+circuits, we need a mechanism to replace the original hostname or IP in each 
+source/destination PFN with the source IP and destination IP of the circuit.
+
+Among the many events that are triggered in the FileDownload agent, a special one 
+is "transfer\_task". The role of this event is to mark a task as ready for transfer. 
+When all of the tasks in a particular job are ready, the backend will automatically 
+launch the actual transfer of files. Since this event is triggered for each individual
+transfer task, just before a transfer job is started, this is the ideal place to
+substitute the original hostnames in source and destination PFNs, with the ones
+that provided by the circuit API.
+
+We modified the "transfer\_task" event and introduced additional steps before
+marking task as "READY". First, we check if the link over which the file is
+supposed to be transferred over has a circuit established or not. If that's the
+case, we replace the hostname/IP in the source and destination PFNs with the
+IPs of the circuit endpoints. Only after this is the task as marked ready for
+transfer. By doing this substitution, when the transfer eventually starts
+the files will be transferred over the circuit instead of the normal path. This
+substitution is transparent to the rest of the PhEDEx instances and doesn't 
+require any changes on other components (like the backends).
+
+It could also happen that a circuit becomes available, while the Download agent
+marks tasks ready for transfer. This means that part of the tasks in a job
+will contain source/destination PFNs having the original hostname/IPs, while
+others will use the circuit IPs. When the FDT backend is used, it will automatically
+launch two different jobs: one for the files transferred over the normal path
+and the other for files transferred over the circuit. We still need to test
+how the other backends react. In any case, even if a transfer job would fail 
+because of this, PhEDEx will just try and the transfer would succeed the second
+time.
+
+\subsubsection{Circuit awareness and lifecycle management}
+
+Since the standard FileDownload agent doesn't have knowledge about more than one
+transfer paths over a given link we needed to add this circuit awareness and a
+way to manage the lifecycle of a circuit on a given link.
+
+Because of this we added several POE controlled events. Here are the main ones:
+
+\begin{itemize}
+  \item check\_workload
+  \item request\_circuit
+  \item handle\_request
+  \item teardown\_circuit
+  \item check\_circuit\_setup
+\end{itemize}
+
+\paragraph{check\_workload}
+
+This is a recurrent event at 60 second intervals. It is used to estimate the 
+amount of work that remains to be done based on the current size of the download
+ queue. In order to do this, it needs to know the average rate that the current 
+link is capable of and the total number of pending bytes. The latter is calculated
+based on the PENDING tasks that it currently holds. The former can be retrieved
+in two ways: 
+
+\begin{itemize}
+  \item if the agent has recently transfered tasks it will retain information about
+previously DONE tasks, which will then be used for the average rate calculation
+  \item if nothing has been transferred, it will try to get this information based
+on the link average rate calculated by PhEDEx itself.
+\end{itemize}
+
+If an average rate source-destination pair has been calculated, it will estimate
+the amount of work needed to be done.
+
+If for a given link the following are true, a circuit request will be made:
+\begin{itemize}
+  \item the amount of work pending is above a given amount (currently 5h worth of transfers) 
+  \item a circuit has not been established
+  \item a circuit request is not pending
+  \item a circuit request hasn't previously failed
+  \item transfers haven't previously failed while a circuit was active
+\end{itemize}
+
+\paragraph{request\_circuit}
+
+As the name suggests this event is used to request a circuit.
+
+It will:
+\begin{itemize}
+  \item create a state file for this request in "state/circuits/request". 
+This file contains PhEDEx nodes involved in request, time of request and the 
+lifetime of the circuit.
+  \item starts a timer to the event "handle\_request\_timeout". If we don't
+get a request within 10 minutes it's very likely that we won't get it at 
+all.
+  \item in the case of this prototype "handle\_request" is called directly,
+however in the production version, this event will actually be a callback
+from the API call where a circuit is being requested
+\end{itemize}
+
+\paragraph{handle\_request}
+
+This event is a callback from the API call to request a circuit.
+
+It will:
+\begin{itemize}
+  \item trigger the event "remove\_circuit\_request"
+  \item if the circuit creation failed, flag it and return from event
+  \item modifies and saves the state file corresponding to this request by 
+adding relevant information concerning the circuit that has just been established:
+time the circuit was established, time the circuit expires, endpoint IPs of 
+the established circuit.
+  \item starts a timer to the event "teardown\_circuit" if an expiration
+time has been specified for the circuit
+\end{itemize}
+
+\paragraph{check\_circuit\_setup}
+
+This is another recurrent event at 60 second intervals and is used to provide
+sanitation in case of errors. An important scenario is what happens after an
+agent crashes and is restarted. If such a thing occurs, there are two possible
+cases:
+
+\begin{enumerate}
+  \item Download agent has crashed
+  \begin{enumerate}
+    \item Internal data is lost, but state file(s) exist in circuits/requested:\\
+			If there's a state file in /circuits/requested but no matching internal data, 
+			try to cancel the request and remove the file from the folder
+    \item Internal data is lost, but state file(s) exist in circuits/established:\\
+			If there's a file in circuits/established, but no matching internal data:
+			check the expiration time in the state file:
+			\begin{itemize}
+			  \item if the expiration time is not defined, or is defined but didn't expire yet,
+					  the circuit can be reused. Internal data is populated based on state
+					 file and if the expiration time is defined, the teardown\_circuit timer is
+					 triggered.
+			  \item if the expiration time is defined at it expired, remove the state file and
+					 try to tear down the circuit 
+			\end{itemize}
+  \end{enumerate}
+  \item Reconsider failed circuits with failed requests or transfers:\\
+		  Creating a circuit on a particular link may have been blacklisted due to requests
+		  for circuits failing or due to files transfers failing on that circuit. After a given
+		  time these circuits are removed from the blacklist and the system is free to try
+		  and use them again.
+\end{enumerate}
+
+\begin{description}
+	\item[handle\_request\_timeout] \hfill \\
+		Event triggered after a timeout, it's used to cancel request and clean internal state
+	\item[remove\_circuit\_request] \hfill \\
+		Cleans up internal data and state file concerning this request
+	\item[teardown\_circuit] \hfill \\
+		Cleans up internal data and state file concerning the circuit and calls API for 
+		tearing down the circuit.
+\end{description}
+
 \subsection{Setup and test}
 The prototype was tested on ANSE's testbed (Figure \ref{fig:testbed}) using 
 two sites: T2\_ANSE\_Amsterdam and T2\_ANSE\_Geneva. These sites consist of two
@@ -22,7 +187,7 @@ continuous stream of UDP packets at 5Gbps . The other circuit served as the dedi
 link.
 
 Monitoring was done with MonALISA\footnote{MONitoring Agents using Large
- Integrated Services Architecture (monalisa.cern.ch) } and the PhEDEx tool itself.
+ Integrated Services Architecture (monalisa.cern.ch)} and the PhEDEx tool itself.
 
 The main purpose of this test wasn't to show that we can saturate a 10Gbps link with
 PhEDEX (although we came close with just 1 controller), but that a PhEDEx instance 
@@ -42,7 +207,7 @@ comprising of 30 files of 15 GB each.
   \caption{Diagram of the testbed used by the prototype}
   \label{fig:testbed}
 \end{figure} 
-
+\
 
 \subsection{Results}
 
