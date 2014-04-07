@@ -1,0 +1,40 @@
+\section{ANSE setup}
+
+A typical PhEDEx installation consists of:
+\begin{itemize}
+	\item central agents
+	\item site agents
+	\item central Oracle database
+	\item one or more front-ends \\
+\end{itemize}
+
+In the context of the ANSE project, the central agents, DB and frontend all run
+at CERN. The site agents are running on machines located in different geographical
+locations. (see Figure \ref{fig:ANSE-setup}).
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.95\textwidth]{Figures/ANSE-setup.png}
+  \caption{PhEDEx setup for ANSE}
+  \label{fig:ANSE-setup}
+\end{figure}
+
+For development work and prototype tests we mainly use OpenStack virtual machines.
+These contain PhEDEx installations and also double as small storage nodes. These
+typically have 8GB of RAM, 4 VCPUs and 80GB disk. These VMs are able to have
+sustained disk-to-disk transfer rates of 1Gbps.
+
+For more advanced tests we use four physical servers, two located in Geneva and 
+two in Amsterdam. In each location, one of the two servers is used as a PhEDEx node, 
+while the other is used a storage node.
+
+Each storage node (sandy01-gva and sandy01-ams) have dual E5-2670 CPUs (32 logical cores)
+64GB or RAM and 2 LSI disk controllers. Each of the LSI controllers manages
+8 high speed SSDs. Two RAID-0 arrays are created on each LSI controller (4 SSD per
+RAID 0 array).
+
+Between the two storage nodes we have a high capacity 40Gbps link and use Ciena
+routers to create dynamic links between them.
+
+Monitoring is performed with MonALISA\footnote{MONitoring Agents using Large
+ Integrated Services Architecture (monalisa.cern.ch)}.
