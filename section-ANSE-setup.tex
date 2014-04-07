@@ -36,5 +36,13 @@ RAID 0 array).
 Between the two storage nodes we have a high capacity 40Gbps link and use Ciena
 routers to create dynamic links between them.
 
+Since the storage nodes were designed for high speed rather than high capacity,
+we created a large number of soft links to large random-filled files (2->15GB) 
+on the source disk. 
+
+On the destination side we either used a crontab running every minute to remove
+transferred files, or we relied on the PhEDEx post-validation  script to remove 
+files in bulk at the end of a transfer job.
+
 Monitoring is performed with MonALISA\footnote{MONitoring Agents using Large
- Integrated Services Architecture (monalisa.cern.ch)}.
+ Integrated Services Architecture (monalisa.cern.ch)} and PhEDEx.
