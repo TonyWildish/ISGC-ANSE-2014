@@ -1,38 +1,21 @@
 \section{Introduction}
-PhEDEx \cite{PhEDEx} is the data-placement management tool for the CMS \cite{CMS} experiment at 
-the LHC. It manages the scheduling of all large-scale WAN transfers in CMS, 
-ensuring reliable delivery of the data. It consists of several components:
+PhEDEx\cite{PhEDEx} is the data-placement management tool for the CMS\cite{CMS} experiment at the LHC. It manages the scheduling of all large-scale WAN transfers in CMS, ensuring reliable delivery of the data. It consists of several components:
 
 \begin{itemize}
 \item an Oracle database, hosted at CERN
-\item a website and data-service, which users (humans or machine) use to interact with and control 
-PhEDEx
-\item a set of 'central' agents that deal with routing, request-management, bookeeping and other 
-activities. These agents are also hosted at CERN, though they could be run anywhere. The 
-key point is that there is only one set of central agents per PhEDEx instance
-\item a set of 'site-agents', one set for every site that receives data
+\item a website and data-service, which users (humans or machine) use to interact with and control PhEDEx
+\item a set of \emph{central} agents that deal with routing, request-management, bookeeping and other activities. These agents are also hosted at CERN, though they could be run anywhere. The key point is that there is only one set of central agents per PhEDEx instance
+\item a set of \emph{site-agents}, one set for every site that receives data
 \end{itemize}
 
-PhEDEx maintains knowledge and history of transfer 
-performance, and the central agents use that information to choose among source replicas when a 
-user makes a request. The central agents then queue the transfer to be processed by the site 
-agents. PhEDEx operates in a data-pull mode, the destination site pulls the data to itself when it 
-is ready. This gives the sites more control over the activity at their site, so they can ensure 
-that neither their network nor their storage is overloaded.
+PhEDEx maintains knowledge and history of transfer performance, and the central agents use that information to choose among source replicas when a user makes a request (users specify the destination, PhEDEx chooses the source). The central agents then queue the transfer to be processed by the site agents. PhEDEx operates in a data-pull mode, the destination site pulls the data to itself when it is ready. This gives the sites more control over the activity at their site, so they can ensure that neither their network nor their storage are overloaded.
 
-PhEDEx was originaly conceived over ten years ago now, and the architecture still reflects design 
-decisions made at that time. Then, the network was expected to be the weakest link in 
-the developing Worldwide LHC Grid (WLCG) \cite{WLCG}. Networks were expected to have bandwidth of 
-the order of 100 Mb/sec, to be unreliable, and to be poorly connected across the span of the CMS 
-experiment. Accordingly, PhEDEx will back off fast and retry gently in the face of failed 
-transfers, on the assumption that failures will take time to fix, and that there is other useful 
-data that can use the network in the meantime.
+The key PhEDEx agents, for our purposes, are the \emph{FileDownload} and \emph{FileRouter} agents. The FileDownload agent is a site-agent, each site runs one or more copies of this agent. It is responsible for the actual execution of file-transfers; it retrieves the transfer queue from the database, organises the files in whatever way is suitable for the actual transfer tool that will be used, launches the transfer, monitors its progress, verifies the files have been delivered, and reports the transfer results via the database. The actual transfers are executed using lower-level tools such as the WLCG File Transfer Service (FTS\cite{FTS}) or the Fast Data Transfer tool (FDT\cite{MonALISA}).
 
-The data-transfer topology was designed with a 
-strongly hierarchical structure, with the Tier-0 (CERN) transferring data primarily to a set of 
-6-7 Tier-1 sites, and each Tier-1 site handling traffic between itself, the other Tier-1s. and 
-it's local Tier-2 sites. This kept the transfer-links (i.e. the set of (source,destination) pairs) 
-mostly in the realm of a single regional network operator, and kept the overall number of transfer 
-links low. Transfers between arbitrary pairs of sites were not allowed.
+The FileRouter agent is a central agent. This agent takes the global set of transfer requests and builds the work queues for each site to process with its FileDownload agents. The agent chooses a source-site for each destination, based on internal history and statistics. This works well in practise, but provides only a limited view of the network performance. The name \emph{FileRouter} is perhaps misleading, since the agent doesn't decide the network path the data will take, only the source for each destination and the order in which files are transferred.
 
-Today, the reality is very different. The network has emerged as the most reliable component.
+PhEDEx was originaly conceived over ten years ago now, and the architecture still reflects design decisions made at that time. Then, the network was expected to be the weakest link in the developing Worldwide LHC Grid (WLCG)\cite{WLCG}. Networks were expected to have bandwidth of the order of 100 Mb/sec, to be unreliable, and to be poorly connected across the span of the CMS experiment. Accordingly, PhEDEx will back off fast and retry gently in the face of failed transfers, on the assumption that failures will take time to fix, and that there is other data that can be transferred in the meantime. This can lead to large latencies caused by transient errors, with subsequent delays in processing the data.
+
+The data-transfer topology was designed with a strongly hierarchical structure. The Tier-0 (CERN) transferred data primarily to a set of 6-7 Tier-1 sites, and each Tier-1 site handled traffic between itself, the other Tier-1s. and it's local Tier-2 sites. Tier-2's wishing to exchange data would have to go via Tier-1 intermediaries. This kept the transfer-links (i.e. the set of (source,destination) pairs) mostly in the realm of a single regional network operator, the only cross-region links were used by Tier-1s which were assumed to have the expertise to debug problems and keep the data flowing. It also kept the overall number of transfer links low, since the majority of sites (the Tier-2s) had only one link, to their associated Tier-1 site.
+
+Today, the reality is very different. The network has emerged as the most reliable component of the WLCG; problems with transfers tend to be at the end-points rather than in the network itself. Bandwidths of 10 Gb/sec between Tier-2 sites is common in many areas, and 100 Gb/sec connectivity is starting to appear. Even where the bandwidth is still relatively low, connections are quite reliable, so data can be transferred effectively. This has led CMS to embrace a fully connected transfer mesh in which all sites are allowed to connect to any other site, so the number of transfer links has risen from about 100 to nearer 3000.
