@@ -27,9 +27,11 @@ as well (Figure \ref{fig:Prod-vs-Debug})
 
 A tool has been developed which retrieves statistics from all instances and 
 aggregates the data. This tool then produces a file that the FileRouter agent
-can use.
+can use to supplement its internal statistics, giving it a more complete overview of the
+network performance.
 
-The next step is to integrate it with perfSONAR, effectively gaining a 
+The next step is to integrate it with perfSONAR\cite{perfSONAR}, effectively gaining a 
 more comprehensive picture of what's happening on the network. At the time of
-writing this paper, perfSONAR is yet to be deployed on all sites. We also
-lack a perfSONAR API which we can call to retrieve this data.
+writing this paper, perfSONAR is yet to be deployed on all WLCG sites. We also
+lack a perfSONAR API which we can call to retrieve this data. Finally, PhEDEx will need
+some work to use this data, since it has its own internal naming convention for sites which corresponds to their logical identity, rather than to their internet hostnames.

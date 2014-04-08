@@ -22,3 +22,18 @@ Section 5
 - "PhEDEX will just try" -> "PhEDEX will just retry"
 - check_circuit_setup: folders should be in '' or italics
 - move last 2 figures before references
+
+# TW
+1) Should there be a table of contents, as there is now? That's not normal, I think. If it doesn't come from the template, better remove it before submission. That said, I like it now, it helps me see the structure easily!
+
+2) acronyms: the general rule is that you define acronyms at the point you first use them, inline with the text, and not in a footnote. Also, don't bother to define the acronym unless you use it again later, or it's a name of something you're citing a reference for. Otherwise you're just making the reader learn a new acronym for nothing.
+
+3) there are some references missing that we need to find. Artur or Harvey can help with them.
+
+4) I've made some comments directly in the tex files. Look for 'TW:', that'll find them all.
+
+5) need to make sure all references appear sequentially numbered, i.e. in the right order in bibliography.tex
+
+5.1) You'll notice I use the 'MonALISA' reference for both MonALISA and FDT. That's not a mistake, they really are both covered in the same paper, even though the title doesn't suggest that!
+
+6) You should check with Harvey/Artur about acknowdging the funding source. You may be required to do that!

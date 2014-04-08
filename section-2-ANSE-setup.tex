@@ -1,4 +1,4 @@
-\section{ANSE setup}
+\section{ANSE testbed}
 
 A typical PhEDEx installation consists of:
 \begin{itemize}
@@ -28,7 +28,7 @@ For more advanced tests we use four physical servers, two located in Geneva and
 two in Amsterdam. In each location, one of the two servers is used as a PhEDEx node, 
 while the other is used a storage node.
 
-Each storage node (sandy01-gva and sandy01-ams) have dual E5-2670 CPUs (32 logical cores)
+Each storage node (sandy01-gva and sandy01-ams) has dual E5-2670 CPUs (32 logical cores)
 64GB or RAM and 2 LSI disk controllers. Each of the LSI controllers manages
 8 high speed SSDs. Two RAID-0 arrays are created on each LSI controller (4 SSD per
 RAID 0 array).
@@ -44,4 +44,4 @@ On the destination side we either used a crontab running every minute to remove
 transferred files, or we relied on the PhEDEx post-validation  script to remove 
 files in bulk at the end of a transfer job.
 
-Monitoring is performed with MonALISA\cite{MonALISA}  and PhEDEx.
+Monitoring is performed with MonALISA\cite{MonALISA} and PhEDEx.
