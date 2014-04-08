@@ -1,0 +1,24 @@
+General comments:
+- some figures should potentially be moved so they're closer to the text which is referencing them
+
+Section 2
+
+- first bullet point item is duplicated with intro. 
+- "used a storage node" -> "used as a storage node"
+
+Section 3
+- perhaps we need to have a more in depth explanation concerning the prototype
+
+Section 4
+- first page: some footnotes should potentially be citations
+- before explaining how the FDT integration works, perhaps it would be interesting to
+explain how the FileDownload agent manages transfers. This is already explained in 
+Section 5, so perhaps we could move it to a new section/subsection 
+
+Section 5
+- "before marking task as" -> "before marking the task as"
+- "is the task as marked ready" -> "is the task marked ready"
+- "eventually starts the files" -> "eventually starts, the files"
+- "PhEDEX will just try" -> "PhEDEX will just retry"
+- check_circuit_setup: folders should be in '' or italics
+- move last 2 figures before references
