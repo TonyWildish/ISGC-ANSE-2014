@@ -30,8 +30,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %  ***:to do  **?:question  ...:to choose  XXX:to delete  ???:unknown %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\NeedsTeXFormat{LaTeX2e}[1995/12/01] \ProvidesClass{PoS} [2006/05/19
-v1.2.1 LaTeX document class - P.D.]
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesClass{PoS} [2006/05/19 v1.2.1 LaTeX document class - P.D.]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\logo{\raisebox{-5mm}{\hbox{\noindent\includegraphics{Template/PoSlogo}}}}
@@ -48,18 +48,20 @@ v1.2.1 LaTeX document class - P.D.]
 \newif\if@shorttitle\@shorttitlefalse		%
 \newif\if@PoSspecialurl\@PoSspecialurlfalse
 \newif\if@PoScits\@PoScitsfalse			%
+
+\RequirePackage{ifpdf}
 %copied from ifpdf.sty
-\newif\ifpdf
-\ifx\pdfoutput\undefined
-\else
-  \ifx\pdfoutput\relax
-  \else
-    \ifcase\pdfoutput
-    \else
-      \pdftrue
-    \fi
-  \fi
-\fi
+%\newif\ifpdf
+%\ifx\pdfoutput\undefined
+%\else
+%  \ifx\pdfoutput\relax
+%  \else
+%    \ifcase\pdfoutput
+%    \else
+%      \pdftrue
+%    \fi
+%  \fi
+%\fi
 
 
 \if@compatibility
@@ -169,6 +171,7 @@ v1.2.1 LaTeX document class - P.D.]
 \ProcessOptions
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% REQUIRED PACKAGES %%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{color}
 \RequirePackage{amssymb}
 \RequirePackage[T1]{fontenc}
 \RequirePackage{times}
