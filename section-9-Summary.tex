@@ -1,5 +1,21 @@
-%% Vlad, this is for you
-\section{Summary}
-main points to bring out:
+\section{Summary and future plans}
 
-CMS intends to integrate network-awareness into PhEDEx. We have a prototype that transparently integrates the use of virtual-circuits in the FIleDownload agent. The next step is to interface to the circuit API, so the agent can directly control the circuits. After that, proceed to integration at the FileRouter level.
+PhEDEx is an important part of the software stack of the CMS collaboration and
+because of this, it is essential that it evolves and adapts new technologies 
+where possible. 
+
+Over the course of the past year, the ANSE project has made significant progress
+towards integrating network-awareness into PhEDEx. In our latest work we have
+created and tested a prototype which integrates the use of virtual-circuits into
+PhEDEx. This is done transparently for the other site-agents, with no modifications
+done to the database schema and with all the logic contained in the FileDownload
+agent.
+
+Our immediate goal is to adopt a circuit management system and use its API to
+control and operate real circuits. This will be followed by extensive tests, on 
+a potentially expanded ANSE testbed.
+
+Once this system is working as expected we will proceed to integrate the use
+of virtual circuits at the FileRouter level. Here, we gain a global view of 
+CMS-wide flows, which means we can make informed decisions about which circuits
+need to be requested or not.
