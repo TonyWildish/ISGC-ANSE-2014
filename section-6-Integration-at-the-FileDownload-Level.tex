@@ -4,9 +4,12 @@
 
 For this prototype we decided to integrate all of the control and circuit awareness
 logic in the FileDownload agent, thus eliminating the need for an additional site 
-agent or any changes to the DB schema.
+agent or any changes to the DB schema. 
 
-\textbf{(TW: some comment here about the prototype not actually booking the circuit itself yet, otherwise people don't find out until they read about the request\_circuit event later on)}
+To ease development and to facilitate testing, we fake calls to circuit management APIs
+which in turn, return IPs of already established static circuits. From PhEDEx'
+point of view it's as if a new path has been created. If some conditions are
+met, PhEDEx switches to using this path, as it would with a dynamic circuit.
 
 \subsubsection{Making use of a circuit}
 
@@ -17,27 +20,6 @@ A PFN contains the protocol that needs to be used, the hostname or IP of the fil
 and the local path of that file. This means that if we want PhEDEx to use
 circuits, we need a mechanism to replace the original hostname or IP in each 
 source/destination PFN with the source IP and destination IP of the circuit.
-
-\textbf{(TW: This is too much detail, I propose trimming it to something like this below. I leave the original text in the tex
-file, commented out, in case I've overlooked something that needs to be put back in. Please check that I haven't messed up the
-explanation here!)}
-% Among the many events that are triggered in the FileDownload agent, a special one 
-% is "transfer\_task". The role of this event is to mark a task as ready for transfer. 
-% When all of the tasks in a particular job are ready, the backend will automatically 
-% launch the actual transfer of files. Since this event is triggered for each individual
-% transfer task, just before a transfer job is started, this is the ideal place to
-% substitute the original hostnames in source and destination PFNs, with the ones
-% that provided by the circuit API.
-
-% We modified the "transfer\_task" event and introduced additional steps before
-% marking task as "READY". First, we check if the link over which the file is
-% supposed to be transferred over has a circuit established or not. If that's the
-% case, we replace the hostname/IP in the source and destination PFNs with the
-% IPs of the circuit endpoints. Only after this is the task as marked ready for
-% transfer. By doing this substitution, when the transfer eventually starts
-% the files will be transferred over the circuit instead of the normal path. This
-% substitution is transparent to the rest of the PhEDEx instances and doesn't 
-% require any changes on other components (like the backends).
 
 The FileDownload agent actually receives only Logical File Names (LFNs) from the database, plus the name of the chosen source site. It constructs the PFNs from the LFNs and a lookup-table per-site which each site maintains and uploads to the database. After calculating the source and destination PFNs, files are bundled into transfer jobs and queued for submission with whichever transfer tool has been configured between the two sites.
 
@@ -71,7 +53,6 @@ To implement circuit-control we added several POE controlled events. Here are th
 \end{itemize}
 
 \paragraph{check\_workload}
-
 This is a recurrent event at 60 second intervals. It is used to estimate the 
 amount of work that remains to be done based on the current size of the download
  queue. In order to do this, it needs to know the average rate that the current 
@@ -89,16 +70,16 @@ on the link average rate calculated by PhEDEx itself.
 If an average rate source-destination pair has been calculated, it will estimate
 the amount of work needed to be done.
 
-Then, for each link, the following conditions are checked:
+Going through all of the links, we check if all of the conditions below had been met:
 \begin{itemize}
-  \item the amount of work pending is above a given amount (currently 5h worth of transfers) 
+  \item the amount of work pending is above a given amount\footnote{This is arbitrarily set to five hours}
   \item a circuit has not been established
   \item a circuit request is not pending
-  \item a circuit request hasn't previously failed \textbf{(TW: within a given time-window?)}
-  \item transfers haven't previously failed while a circuit was active \textbf{(TW: likewise, within a given time-window?)}
+  \item a circuit request hasn't failed within a given time-window\footnote{This time-window is arbitrarily set to one hour}
+  \item transfers haven't previously failed, within a given time-window, while a circuit was active 
 \end{itemize}
 
-If these conditions are met, the request\_circuit event is triggered. \textbf{(TW: since we're talking about an event-driven framework it's worth mentioning which events trigger which!)}
+If this is the case, we trigger the request\_circuit event for that particular link.
 
 \paragraph{request\_circuit}
 
@@ -134,11 +115,7 @@ time has been specified for the circuit
 \paragraph{check\_circuit\_setup}
 
 This is another recurrent event at 60 second intervals and is used to provide
-sanitation in case of errors. An important scenario is what happens after an
-agent crashes and is restarted. If such a thing occurs, there are two possible
-cases:
-
-\textbf{(TW: I made some changes here to remove details about directories etc. I think they may only serve to distract the reader. Please check carefully that I haven't messed up the explanation)}
+sanitation in case of errors. There are two important scenarios that we are interested in:
 \begin{enumerate}
   \item Download agent has crashed and is restarted
   \begin{enumerate}
@@ -216,7 +193,7 @@ A quick glance at this plot, shows that the 10 Gbps link was saturated by the tw
 competing transfers. Between 23:00 and 0:00 (beginning of the plot) and 
 10:00 and 11:00 (end of the plot), only UDP traffic was sent across the network, 
 running at a steady 5 Gbps. This effectively leaves only 5 Gbps of PhEDEx traffic.
-PhEDEx transfers start around 0:00 and quickly saturate the 10 Gbps. 
+PhEDEx transfers start around 0:00 and quickly saturates the 10 Gbps. 
 The seesaw look of this plot is due to the fact that PhEDEx has a delay
 between finishing one job and starting the next. This is due to various factors:
  pre/post validation, preparation of copyjobs or even time spent by the backend itself 
@@ -229,9 +206,9 @@ between finishing one job and starting the next. This is due to various factors:
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.95\textwidth]{Figures/FileDownload_Shared_path.png}
-  \caption{PhEDEx transfers on the shared path - competing with 5Gbps UDP traffic
-\textbf{(TW: again, a quick comment on the blue and red lines, what intervals they cover. You don't need that on all plots, but it's useful to remind the reader at this point, since it's been a while since they looked at the previous plots)}
-  }
+  \caption{PhEDEx transfers on the shared path - competing with 5Gbps UDP traffic. As with
+  the previous case, the red line represents network throughput in Mbps while the blue
+  line represents a moving average of one hours of that network throughput.}
   \label{fig:shared_transfers}
 \end{figure} 
 
@@ -255,7 +232,6 @@ drop in average link rate is two fold:
   write rates of 10 Gbps to disk.
 \end{itemize}
 
-
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.95\textwidth]{Figures/FileDownload_Solo_path.png}
@@ -267,10 +243,7 @@ Figure \ref{fig:combined_transfers} and Figure \ref{fig:combined_phedex_transfer
 the  network activity for PhEDEx traffic alone on both links. 
 In this plot we can observe that PhEDEx switches to using the
 new link without any interruption in service, doing it seamlessly and in a 
-transparent way for other site-agents \textbf{(TW: avoid the word 'instances' for sites in PhEDEx. 'instances' to PhEDEx users means complete separate instantiations of the system, different database, central agents, everything)} (switch occurs around 10:00).
-
-This plot also shows that there is a huge benefit to using the dedicated link.
-\textbf{(TW: I'd drop this part, it confuses the issue. We know a dedicated path is going to be better, but the real news is the transparent use of the circuit by the FileDownload agent)}
+transparent way for other site-agents (switch occurs around 10:00).
 
 \begin{figure}[h]
   \centering

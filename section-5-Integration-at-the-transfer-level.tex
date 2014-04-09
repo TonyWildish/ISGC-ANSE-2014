@@ -1,7 +1,7 @@
 \section{Using a virtual circuit per file-transfer}
 
 \subsection{Integrating FDT into PhEDEx}
-The FDT tool integrates InterDomain Controller Protocol (IDCP) \textbf{(TW: remove the IDCP acronym if it is not used again later or is not a name you want to reference in the bibliography)}
+The FDT tool integrates InterDomain Controller Protocol (IDCP)
 On-Demand Secure Circuits and Advance Reservation System (OSCARS\cite{OSCARS}) calls so
 integrating it in PhEDEx naturally gives us Bandwidth on Demand
 capabilities. In addition to this, FDT performs extremely well
@@ -68,7 +68,7 @@ Each transfer job was 2.25TB (150x15TB files).
 
 As seen in Figure \ref{fig:FDT-Transfers} and Figure \ref{fig:FDT-Transfers-PhEDEx}
 FDT is able to achieve sustained rates of over 1500MB/sec. As PhEDEx shows,
-the average sits at a marginally slower 1360MB/sec.Figure \ref{fig:FDT-Transfers}, shows periodic drops in transfer rates.
+the average sits at a marginally slower 1360MB/sec. Figure \ref{fig:FDT-Transfers}, shows periodic drops in transfer rates.
 This is due to the fact that between each transfer job (which is composed of a limited
 number of files) there is a delay between the ending of one job and the launch of
 a new one. This is what accounts for the difference in average reported rates by PhEDEx
@@ -82,18 +82,18 @@ the source and destinations sites are spread on different physical disks/control
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.95\textwidth]{Figures/FDT-transfers.png}
-  \caption{PhEDEx transfers over 24hrs using FDT
-\textbf{(TW: explain the red and blue lines briefly here. Is this PhEDEx numbers, network interface numbers, or what? Don't assume people will know what 'MonALISA plot' means! Also verify the y-axis, is it really Mbps? or MBps?. Finally, the blue line is nowhere near either 1500 MB/sec or 1360 MB/sec, so what does this plot mean?)}
-  }
+  \caption{PhEDEx transfers over 24hrs using FDT as reported by MonALISA. 
+  The red line represents the network interface throughput in Mbit/sec, with data points
+  each minute. The blue line represents a moving average over one hour of that throughput.}
   \label{fig:FDT-Transfers}
 \end{figure} 
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.95\textwidth]{Figures/FDT-transfers-PhEDEx.png}
-  \caption{PhEDEx transfers over 24hrs using FDT - PhEDEx rate (in MB/sec)
-\textbf{(TW: briefly explain why the plot isn't flat)}
-  }
+  \caption{PhEDEx transfers over 24hrs using FDT as reported by PhEDEx. Transfer rates are
+  given in MB/sec, with one hour bins. This, coupled with the fact that rates are only 
+  reported at the end of job transfers, make this plot look bumpy.}
   \label{fig:FDT-Transfers-PhEDEx}
 \end{figure} 
 

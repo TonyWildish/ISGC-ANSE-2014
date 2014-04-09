@@ -1,13 +1,5 @@
 \section{ANSE testbed}
 
-A typical PhEDEx installation consists of:
-\begin{itemize}
-	\item central agents
-	\item site agents
-	\item central Oracle database
-	\item one or more front-ends \\
-\end{itemize}
-
 In the context of the ANSE project, the central agents, DB and frontend all run
 at CERN. The site agents are running on machines located in different geographical
 locations. (see Figure \ref{fig:ANSE-setup}).
@@ -26,7 +18,7 @@ sustained disk-to-disk transfer rates of 1Gbps.
 
 For more advanced tests we use four physical servers, two located in Geneva and 
 two in Amsterdam. In each location, one of the two servers is used as a PhEDEx node, 
-while the other is used a storage node.
+while the other is used as a storage node.
 
 Each storage node (sandy01-gva and sandy01-ams) has dual E5-2670 CPUs (32 logical cores)
 64GB or RAM and 2 LSI disk controllers. Each of the LSI controllers manages
