@@ -17,8 +17,8 @@ Princeton / USA\\
 E-mail: \email{awildish@princeton.edu}}
 
 \abstract{
-PhEDEx is the data placement and management tool in CMS, which controls bulk 
-data-flows. While robust, its architecture is now ten years old and has yet to fully 
+PhEDEx is the data placement and management tool for the CMS experiment at the LHC. It controls the large-scale data-flows on the WAN across the experiment, typically handling 1 PB of data per week.
+While robust, its architecture is now ten years old and has yet to fully
 adapt to today's production environment, an environment in which the network is 
 the fastest and most reliable component.
 
@@ -49,9 +49,9 @@ additional attached storage nodes.
 % sophisticated PhEDEx use-cases.
 
 In this paper, we present the work that has been done in ANSE for PhEDEx.
-This includes the integration of a new transfer backend using
-the Fast Data Transfer (FDT) tool and the creation of a prototype site
-agent which allows PhEDEx to control the network via dynamic circuits. We
+This includes performance measurements using
+the Fast Data Transfer (FDT) tool and the extension of the PhEDEx agent that downloads files to a site
+to allow it to control the network via creation and use of dynamic circuits. We
 present the results of our tests using these new features, on high-speed 
 WAN circuits ranging from a few Gbps to 40Gbps and detail the development 
 done within PhEDEx itself.
