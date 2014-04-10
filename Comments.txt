@@ -1,21 +1,6 @@
-General comments:
-- some figures should potentially be moved so they're closer to the text which is referencing them
-
-Section 3
-- perhaps we need to have a more in depth explanation concerning the prototype
-
-Section 4
-- before explaining how the FDT integration works, perhaps it would be interesting to
-explain how the FileDownload agent manages transfers. This is already explained in 
-Section 5, so perhaps we could move it to a new section/subsection 
-
 Section 5
 
 # TW
-1) Should there be a table of contents, as there is now? That's not normal, I think. If it doesn't come from the template, better remove it before submission. That said, I like it now, it helps me see the structure easily!
-
 2) acronyms: the general rule is that you define acronyms at the point you first use them, inline with the text, and not in a footnote. Also, don't bother to define the acronym unless you use it again later, or it's a name of something you're citing a reference for. Otherwise you're just making the reader learn a new acronym for nothing.
 
 5) need to make sure all references appear sequentially numbered, i.e. in the right order in bibliography.tex
-
-6) You should check with Harvey/Artur about acknowdging the funding source. You may be required to do that!
