@@ -1,21 +1,18 @@
 \section{Summary and future plans}
 
-PhEDEx is an important part of the software stack of the CMS collaboration and
-because of this, it is essential that it evolves and adapts new technologies 
-where possible. 
+PhEDEx has been very successful at managing data-flows on the WAN for the CMS collaboration. Nonetheless, it's architecture is based on design decisions that are no longer valid, and in order to continue to scale and perform for the future, it must evolve, taking advantage of new technologies.
 
 Over the course of the past year, the ANSE project has made significant progress
-towards integrating network-awareness into PhEDEx. In our latest work we have
+towards integrating network-awareness into PhEDEx. We have
 created and tested a prototype which integrates the use of virtual-circuits into
-PhEDEx. This is done transparently for the other site-agents, with no modifications
-done to the database schema and with all the logic contained in the FileDownload
-agent.
+PhEDEx at the level of the FileDownload agent, i.e. per destination-site. This is transparent for the other site-agents, with no modifications to the database schema and with all the logic contained in the FileDownload
+agent. Nor does it depend on network-circuits being infallible, the existing failure and retry mechanisms can cope with any underlying instability in the network.
 
 Our immediate goal is to adopt a circuit management system and use its API to
 control and operate real circuits. This will be followed by extensive tests, on 
-a potentially expanded ANSE testbed.
+a potentially expanded ANSE testbed and ultimately in production data-transfers.
 
-Once this system is working as expected, we will proceed to integrate the use
+The next step is to integrate the use
 of virtual circuits at the FileRouter level. Here, we gain a global view of 
 CMS-wide flows, which means we can make informed (optimal) decisions about which 
 circuits need to be requested or not.
