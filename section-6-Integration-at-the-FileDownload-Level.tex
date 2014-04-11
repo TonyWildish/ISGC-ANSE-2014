@@ -142,11 +142,11 @@ sanitation in case of errors. There are two important scenarios that we are inte
 \end{enumerate}
 
 \begin{description}
-	\item[handle\_request\_timeout] \hfill \\
-		Event triggered after a timeout, it's used to cancel request and clean internal state
-	\item[remove\_circuit\_request] \hfill \\
+	\item[handle\_request\_timeout]
+		Triggered after a timeout, cancels a request and cleans its internal state
+	\item[remove\_circuit\_request]
 		Cleans up internal data and state file concerning this circuit request
-	\item[teardown\_circuit] \hfill \\
+	\item[teardown\_circuit]
 		Cleans up internal data and state file concerning the circuit and calls the API for 
 		tearing down the circuit.
 \end{description}
@@ -158,8 +158,6 @@ our two PhEDEx sites: \\ T2\_ANSE\_Amsterdam and T2\_ANSE\_Geneva. As we mention
 each LSI controller manages 8 SSDs split in two RAID 0 arrays. Since the tests are write 
  intensive and were scheduled to run for around 24 hours, we decided to only use 
  1 LSI controller, in order to minimize the negative effects on the life of the SSDs.
-
-
 Two 10Gbps virtual circuits were created for the purposes of this test. Figure \ref{fig:testbed}
 depicts the setup used.
 
@@ -181,10 +179,8 @@ is able to switch to using a new path in a transparent manner and with no down t
 
 The first part of the test consisted of a 10 hour run with PhEDEx transfers on the 
 shared link. After this time, PhEDEx switched to using the dedicated circuit and
-continued transfers for another 10 hours.
-
-We set up PhEDEx to run a single 450 GB transfer job at a time, each one 
-comprised of 30 files of 15 GB each.
+continued transfers for another 10 hours. We set up PhEDEx to run a single 450 GB transfer 
+job at a time, each one comprised of 30 files of 15 GB each.
 
 \subsection{Results}
 
