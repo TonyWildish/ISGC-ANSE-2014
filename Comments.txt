@@ -1,6 +1,0 @@
-Section 5
-
-# TW
-2) acronyms: the general rule is that you define acronyms at the point you first use them, inline with the text, and not in a footnote. Also, don't bother to define the acronym unless you use it again later, or it's a name of something you're citing a reference for. Otherwise you're just making the reader learn a new acronym for nothing.
-
-5) need to make sure all references appear sequentially numbered, i.e. in the right order in bibliography.tex
