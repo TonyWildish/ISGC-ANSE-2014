@@ -14,7 +14,7 @@ met, PhEDEx switches to using this path, as it would with a dynamic circuit.
 \subsubsection{Making use of a circuit}
 
 PhEDEx transfers files in bulk, copying several files with each transfer command. The number of files varies from
-site to site depending on local constraints, but is typically in the range of a few tens of files per transfer job. Each transfer job therefore contains information about the source and destination Physical File Names (PFNs) of several files.
+site to site depending on local constraints, but it is typically in the range of a few tens of files per transfer job. Each transfer job, therefore, contains information about the source and destination Physical File Names (PFNs) of several files.
 
 A PFN contains the protocol that needs to be used, the hostname or IP of the file
 and the local path of that file. This means that if we want PhEDEx to use
@@ -91,7 +91,7 @@ It does the following:
 lifetime of the circuit. This file is used to maintain knowledge of circuits across restarts of the FileDownload agent
   \item sets a timer to cancel the request if there is no timely response. If we don't
 get a circuit within 10 minutes it's very likely that we won't get it at all.
-  \item in the case of this prototype the "handle\_request" event is triggerred directly,
+  \item in the case of this prototype the "handle\_request" event is triggered directly,
 however in the production version, this event will actually be a callback
 from the API call where a circuit is being requested
 \end{itemize}
@@ -130,7 +130,7 @@ sanitation in case of errors. There are two important scenarios that we are inte
 					  the circuit can be reused. Internal data is populated based on state
 					 file and if the expiration time is defined, the teardown\_circuit timer is
 					 set.
-			  \item if the expiration time is defined at it expired, remove the state file and
+			  \item if the expiration time is defined but it expired, remove the state file and
 					 try to tear down the circuit 
 			\end{itemize}
   \end{enumerate}
@@ -217,7 +217,7 @@ to the storage not being able to sustain such high write rates.
 
 This time, the average link rates drop from 9.5 Gbps to 8.5 Gbps, however 
 actual PhEDEx transfers go up from 4.5 Gbps to 8.5 Gbps! The reason for this 
-drop in average link rate is two fold: 
+drop in average link rate is twofold: 
 
 \begin{itemize}
   \item Transferring a job at higher speeds means that it will take less time for

@@ -15,7 +15,7 @@ multithreaded system, using the capabilities of the Java NIO
 libraries. It's capable of reading and writing at disk speed over wide area 
 networks and runs on all major platforms. 
 	\item[PhEDEx backend] - written in Perl, this backend
-receives transfer jobs from the FileDownload site agent which will in turn 
+receives transfer jobs from the FileDownload site agent which will, in turn, 
 invoke the fdtcp wrapper. 
 	\item[Fdtcp wrapper] - written in Python this is the
 interface between PhEDEx and FDT. It prepares the file list as required by FDT, 
@@ -45,7 +45,7 @@ hands the chunks to the FDT backend. The FDT backend on that machine will then i
 command for each group of files to copy those files from the storage node of
 Site A to the storage node of Site B.
 
-Fdtcp will in turn, invoke the \emph{fdtd} daemons on the two storage nodes. Each fdtd
+Fdtcp will, in turn, invoke the \emph{fdtd} daemons on the two storage nodes. Each fdtd
 daemon will first verify that the command comes from an approved server, after
 which it will launch the appropriate FDT tool. The fdtd daemon on Site B
 will start the FDT tool in server mode and the daemon on site B starts FDT in 
@@ -73,7 +73,7 @@ This is due to the fact that between each transfer job (which is composed of a l
 number of files) there is a delay between the ending of one job and the launch of
 a new one. This is what accounts for the difference in average reported rates by PhEDEx
 and the average rate for each transfer job. This is an artifact of our configuration, which only allowed one
-transfer job to run at a time. In a production environment PhEDEx would run overlapping jobs, so this structure would not be apparent. Nonetheless, we chose to keep the simpler configuration for these first tests, so the results would be easy to interpret.
+transfer job to run at a time. In a production environment PhEDEx would run overlapping jobs, so this structure would not be apparent. Nonetheless, we chose to keep the simpler configuration for these first tests, so that results would be easy to interpret.
 
 These high transfer rates are not only due to the storage system alone. FDT
 automatically starts the correct number of readers and writers if the files at 

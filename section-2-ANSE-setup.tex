@@ -32,8 +32,8 @@ Since the storage nodes were designed for high speed rather than high capacity,
 we created a large number of soft links to large random-filled files (2->15GB) 
 on the source disk. 
 
-On the destination side we either used a crontab running every minute to remove
-transferred files, or we relied on the PhEDEx post-validation  script to remove 
+On the destination side, we either used a crontab running every minute to remove
+transferred files or we relied on the PhEDEx post-validation  script to remove 
 files in bulk at the end of a transfer job.
 
 Monitoring is performed with MonALISA\cite{MonALISA}\cite{MonALISA site} and PhEDEx.
